@@ -7,7 +7,7 @@
     <groupId>me.tippie</groupId>
     <artifactId>tippieutils</artifactId>
 
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3</version>
 
     <packaging>jar</packaging>
 
@@ -16,7 +16,7 @@
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <package.version>1_0_2</package.version>
+        <package.version>1_0_3</package.version>
     </properties>
 
     <build>
