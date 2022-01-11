@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
 public class TippieCommand implements TabExecutor {
 	@Getter private final List<TippieCommand> subCommands = new ArrayList<>();
 	protected String name = null;
