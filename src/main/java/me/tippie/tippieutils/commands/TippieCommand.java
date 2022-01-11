@@ -126,10 +126,10 @@ public class TippieCommand implements TabExecutor {
 	}
 	
 	protected void sendHelpMessage(CommandSender sender, String label, String prefix) {
-		sender.sendMessage(prefix + " §e" + label.replaceFirst(String.valueOf(label.charAt(0)),String.valueOf(label.charAt(0)).toUpperCase()) + " help");
+		sender.sendMessage((prefix.equals("") ? "" : prefix + " ")  + "§6" + label.replaceFirst(String.valueOf(label.charAt(0)),String.valueOf(label.charAt(0)).toUpperCase()) + " help");
 		sender.sendMessage("");
 		for (TippieCommand subCommand : subCommands) {
-			if (subCommand.permission == null || sender.hasPermission(subCommand.permission)) sender.sendMessage("§7 - §a/" + label + " " + subCommand.name + "§7: " + subCommand.description);
+			if (subCommand.permission == null || sender.hasPermission(subCommand.permission)) sender.sendMessage("§7 - §f/" + label + " " + subCommand.name + "§7: " + subCommand.description);
 		}
 		sender.sendMessage("");
 	}
