@@ -3,7 +3,9 @@
 
 name: Deploy with maven
 
-on: release
+on:
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -18,13 +20,9 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
         cache: maven
-    - name: Extract tag name
+    - name: Get the version
       id: tag
-      uses: actions/github-script@0.2.0
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          return context.payload.ref.replace(/\/refs\/tags\//, '');
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
     - name: Relocate Packages
       run: |
         export VERSION=$(sed 's/\./_/g' <<<${{ steps.tag.outputs.result }})
