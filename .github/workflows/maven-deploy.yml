@@ -25,7 +25,7 @@ jobs:
       run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
     - name: Relocate Packages
       run: |
-        export VERSION=$(sed 's/\./_/g' <<<${{ steps.tag.outputs.result }})
+        export VERSION=$(sed 's/\./_/g' <<<${{ steps.tag.outputs.VERSION }})
         mkdir temp
         mv src/main/java/me/tippie/tippieutils/* temp/
         mkdir src/main/java/me/tippie/tippieutils/$VERSION
