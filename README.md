@@ -8,7 +8,7 @@ First you need to include the latest version in your pom.xml as dependency:
         <dependency>
             <groupId>me.tippie</groupId>
             <artifactId>tippieutils</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
             <scope>compile</scope>
         </dependency>
 ```
@@ -26,7 +26,7 @@ A TippieCommand is the command class we use for the command system, to create a 
 ```java
 package me.tippie.tippieutilstest;
 
-import me.tippie.tippieutils.v1_0_3.commands.TippieCommand;
+import me.tippie.tippieutils.v1_0_4.commands.TippieCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -62,7 +62,7 @@ TippieCommands also support subcommands easily, to use such a subcommand you fir
 ```java
 package me.tippie.tippieutilstest;
 
-import me.tippie.tippieutils.v1_0_3.commands.TippieCommand;
+import me.tippie.tippieutils.v1_0_4.commands.TippieCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -92,7 +92,7 @@ Now we can create a sub command, it is important to set the sublevel to `1` or h
 ```java
 package me.tippie.tippieutilstest;
 
-import me.tippie.tippieutils.v1_0_3.commands.TippieCommand;
+import me.tippie.tippieutils.v1_0_4.commands.TippieCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
