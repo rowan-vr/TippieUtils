@@ -19,7 +19,6 @@ import java.util.function.BiConsumer;
 public class OpenGUI {
     /**
      * The name of this GUI
-     * @implNote This is not the title of the inventory, this can be used internally in a plugin.
      */
     @NotNull private String name;
 

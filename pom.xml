@@ -16,10 +16,10 @@
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <package.version>1_0_4</package.version>
     </properties>
 
     <build>
+        <sourceDirectory>${project.basedir}/generated-sources/delombok</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -47,6 +47,10 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok-maven-plugin</artifactId>
                 <version>1.18.20.0</version>
+                <configuration>
+                    <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+                    <outputDirectory>${project.basedir}/generated-sources/delombok</outputDirectory>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
