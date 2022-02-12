@@ -1,4 +1,6 @@
-# TippieUtils
+# TippieUtils 
+![](https://flat.badgen.net/github/release/TippieCodes/TippieUtils) ![](https://flat.badgen.net/github/status/TippieCodes/TippieUtils) ![](https://flat.badgen.net/github/checks/TippieCodes/TippieUtils) ![](https://flat.badgen.net/github/license/TippieCodes/TippieUtils) ![](https://flat.badgen.net/maven/v/metadata-url/https://repo.tippie.me/repository/maven-public/me/tippie/tippieutils/maven-metadata.xml)
+
 This is a useful utilities libary for Spigot plugins which currently holds a command system and command reflection to add commands at runtime
 
 # How to use
