@@ -84,6 +84,7 @@ public class OpenGUI {
 
     void updateInventory(Inventory inventory) {
         viewer.openInventory(inventory);
+        this.inventory = inventory;
         manager.openGuis.put(viewer, this);
     }
 
