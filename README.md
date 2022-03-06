@@ -10,7 +10,7 @@ First you need to include the latest version in your pom.xml as dependency:
         <dependency>
             <groupId>me.tippie</groupId>
             <artifactId>tippieutils</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.6</version>
             <scope>compile</scope>
         </dependency>
 ```
@@ -28,7 +28,7 @@ A TippieCommand is the command class we use for the command system, to create a 
 ```java
 package me.tippie.tippieutilstest;
 
-import me.tippie.tippieutils.v1_0_5.commands.TippieCommand;
+import me.tippie.tippieutils.v1_0_6.commands.TippieCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -64,7 +64,7 @@ TippieCommands also support subcommands easily, to use such a subcommand you fir
 ```java
 package me.tippie.tippieutilstest;
 
-import me.tippie.tippieutils.v1_0_5.commands.TippieCommand;
+import me.tippie.tippieutils.v1_0_6.commands.TippieCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -94,7 +94,7 @@ Now we can create a sub command, it is important to set the sublevel to `1` or h
 ```java
 package me.tippie.tippieutilstest;
 
-import me.tippie.tippieutils.v1_0_5.commands.TippieCommand;
+import me.tippie.tippieutils.v1_0_6.commands.TippieCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -169,6 +169,10 @@ TippieUtils also includes a easy way to add commands on runtime without having t
 		}
     }
 ```
+
+## Gui's
+TippieUtils also has a easy to use GUI system, you can create a GUI by using the GUI builder,
+`.... WIP (see javadoc)`
 
 # Contributing
 If you have any idea or improvement and would like to contribute I encourage you to do so! Fork this repository and make a pull request! If the changes are good it'll be merged and included in the next release of these utils.
