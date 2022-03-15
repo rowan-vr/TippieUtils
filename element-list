@@ -1,4 +1,5 @@
-me.tippie.tippieutils.commands
-me.tippie.tippieutils.commands.annotations
-me.tippie.tippieutils.guis
-me.tippie.tippieutils.reflection
+me.tippie.tippieutils.v1_1_0.commands
+me.tippie.tippieutils.v1_1_0.commands.annotations
+me.tippie.tippieutils.v1_1_0.functions
+me.tippie.tippieutils.v1_1_0.guis
+me.tippie.tippieutils.v1_1_0.reflection
