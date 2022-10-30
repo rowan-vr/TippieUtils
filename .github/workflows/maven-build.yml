@@ -3,9 +3,7 @@
 
 name: Deploy with maven
 
-on:
-  release:
-    types: [published]
+on: [push, pull_request]
 
 jobs:
   wild_1_19:
