@@ -61,7 +61,9 @@ public class TippieCommand implements TabExecutor {
 	 */
 	protected String prefix = "";
 
-	
+	/**
+	 * @hidden
+	 */
 	@Override @ApiStatus.Internal
 	public final boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 		
@@ -131,6 +133,9 @@ public class TippieCommand implements TabExecutor {
 		return true;
 	}
 
+	/**
+	 * @hidden
+	 */
 	@Nullable @Override @ApiStatus.Internal
 	public final List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
 		List<String> complete = null;

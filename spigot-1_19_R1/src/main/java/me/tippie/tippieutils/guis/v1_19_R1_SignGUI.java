@@ -10,18 +10,20 @@ import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.v1_19_R1.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import java.util.function.Function;
 
 public class v1_19_R1_SignGUI implements SignGUI.Internals {
     @Override
-    public void open(SignGUI gui) {
+    public void open(SignGUI gui, Plugin plugin) {
         Player player = gui.getPlayer();
         Location location = player.getLocation();
         BlockPos pos = new BlockPos(location.getBlockX(), 255, location.getBlockZ());
@@ -32,17 +34,15 @@ public class v1_19_R1_SignGUI implements SignGUI.Internals {
 
         SignBlockEntity signBlock = BlockEntityType.SIGN.create(pos, state);
 
-        for (int i = 0; i < 4; i++) {
-            if (gui.getText().size() <= i) break;
-            signBlock.messages[i] = Component.literal(gui.getText().get(i));
-        }
+        for (int i = 0; i < Math.min(gui.getText().size(), 4); i++)
+            signBlock.setMessage(i,Component.literal(gui.getText().get(i)));
 
         ClientboundOpenSignEditorPacket openSign = new ClientboundOpenSignEditorPacket(pos);
-        ClientboundBlockEntityDataPacket signData = ClientboundBlockEntityDataPacket.create(signBlock);
+        ClientboundBlockEntityDataPacket signData = signBlock.getUpdatePacket();
 
         CraftPlayer cp = (CraftPlayer) player;
         cp.getHandle().connection.send(signData);
-        cp.getHandle().connection.send(openSign);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> cp.getHandle().connection.send(openSign), 2L);
     }
 
     @Override

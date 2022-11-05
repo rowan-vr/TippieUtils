@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.lang.reflect.InvocationTargetException;
@@ -57,12 +58,15 @@ public class SignGUI {
      */
     private Predicate<String[]> condition = (lines) -> true;
 
+    @Getter(AccessLevel.NONE) private final Plugin plugin;
+
     /**
      * Create a new SignGUI for a specific player
      * @param player the player who to create the sign gui for
      */
-    public SignGUI(Player player) {
+    public SignGUI(Player player, Plugin plugin) {
         this.player = player;
+        this.plugin = plugin;
     }
 
     /**
@@ -76,11 +80,11 @@ public class SignGUI {
                 future.complete(lines);
                 return true;
             } else {
-                internals.open(this);
+                internals.open(this, plugin);
                 return false;
             }
         });
-        internals.open(this);
+        internals.open(this, plugin);
         return future;
     }
 
@@ -103,7 +107,7 @@ public class SignGUI {
          * @hidden
          */
         @ApiStatus.Internal
-        void open(SignGUI gui);
+        void open(SignGUI gui, Plugin plugin);
 
         /**
          * @hidden
