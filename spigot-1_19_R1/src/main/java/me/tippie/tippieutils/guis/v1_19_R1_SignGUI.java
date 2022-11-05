@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Sign;
 import org.bukkit.craftbukkit.v1_19_R1.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -28,7 +29,8 @@ public class v1_19_R1_SignGUI implements SignGUI.Internals {
         Location location = player.getLocation();
         BlockPos pos = new BlockPos(location.getBlockX(), 255, location.getBlockZ());
 
-        BlockData blockData = Material.OAK_SIGN.createBlockData();
+        Sign blockData = (Sign) Material.OAK_SIGN.createBlockData();
+
         BlockState state = ((CraftBlockData) blockData).getState();
         player.sendBlockChange(new Location(player.getWorld(), pos.getX(), pos.getY(), pos.getZ()), blockData);
 
@@ -41,8 +43,12 @@ public class v1_19_R1_SignGUI implements SignGUI.Internals {
         ClientboundBlockEntityDataPacket signData = signBlock.getUpdatePacket();
 
         CraftPlayer cp = (CraftPlayer) player;
-        cp.getHandle().connection.send(signData);
-        Bukkit.getScheduler().runTaskLater(plugin, () -> cp.getHandle().connection.send(openSign), 2L);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            cp.getHandle().connection.send(signData);
+        }, 2L);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            cp.getHandle().connection.send(openSign);
+        }, 4L);
     }
 
     @Override
