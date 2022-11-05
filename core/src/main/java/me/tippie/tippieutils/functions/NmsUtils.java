@@ -17,12 +17,12 @@ public class NmsUtils {
     static {
         Internals possibleInternals;
         try {
-            final String packageName = SignGUI.class.getPackage().getName();
+            final String packageName = NmsUtils.class.getPackage().getName();
             final String internalsName = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
             possibleInternals = (Internals) Class.forName(packageName + "." + internalsName + "_NmsUtils").getDeclaredConstructor().newInstance();
         } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException |
                        InvocationTargetException | NoSuchMethodException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "TippieUtils could not find a implementation for this server version for the SignGUI utility.", e);
+            Bukkit.getLogger().log(Level.SEVERE, "TippieUtils could not find a implementation for this server version for the NmsUtils utility.", e);
             possibleInternals = null;
         }
         internals = possibleInternals;
