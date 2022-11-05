@@ -97,6 +97,6 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: 'javadoc'
         clean: true
-        folder: ../core/target/site/apidocs
+        folder: core/target/apidocs
         target-folder: .
 
