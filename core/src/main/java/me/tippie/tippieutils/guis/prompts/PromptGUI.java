@@ -10,7 +10,7 @@ public abstract class PromptGUI<T> {
     protected Player player;
     protected GuiManager manager;
 
-    PromptGUI(Player player, GuiManager manager){
+    protected PromptGUI(Player player, GuiManager manager){
         this.player = player;
         this.manager = manager;
     }
