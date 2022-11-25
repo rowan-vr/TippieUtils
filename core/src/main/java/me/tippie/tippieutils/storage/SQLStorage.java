@@ -47,6 +47,31 @@ public class SQLStorage {
 	}
 
 	/**
+	 * Initialise the SQLStorage base for an embedded database.
+	 * @param plugin The plugin that is using this storage.
+	 * @param driver The SQL driver to use.
+	 * @param type The type of database to use.
+	 * @param url The location of the database such as 255.123.129.521:3306/database.
+	 * @param username The username of the database user
+	 * @param password The password of the databuase user
+	 */
+	public SQLStorage(Plugin plugin, Driver driver, SQLType type, String url, String username, String password){
+		this.plugin = plugin;
+		if (type != SQLType.MYSQL)
+			throw new IllegalArgumentException("Only MySQL is currently supported as server database");
+
+		try {
+			DriverManager.registerDriver(driver);
+			DB_CONNECTION = "jdbc:mysql://"+url;
+			DB_USER = username;
+			DB_PASSWORD = password;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+
+	/**
 	 * Run a sql script from the resources of this plugin.
 	 * @param file The name of the file in the resources.
 	 * @throws SQLException When a {@code SQLException} occurs whilst running the script.
