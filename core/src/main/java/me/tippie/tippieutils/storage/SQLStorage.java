@@ -66,6 +66,7 @@ public class SQLStorage {
 			DB_USER = username;
 			DB_PASSWORD = password;
 		} catch (Exception e) {
+			plugin.getLogger().log(Level.SEVERE, "An error occured in SQLStorage!",e);
 			throw new RuntimeException(e);
 		}
 	}
@@ -82,7 +83,7 @@ public class SQLStorage {
 		try (InputStream in = this.getClass().getClassLoader().getResourceAsStream(file)) {
 			setup = new BufferedReader(new InputStreamReader(in)).lines().collect(Collectors.joining("\n"));
 		} catch (Exception e) {
-			plugin.getLogger().log(Level.SEVERE, "Could not read db setup file.", e);
+			plugin.getLogger().log(Level.SEVERE, "An error occured in SQLStorage!", e);
 			throw e;
 		}
 		String[] queries = setup.split(";");
@@ -91,6 +92,9 @@ public class SQLStorage {
 			try (Connection conn = this.getConnection();
 				 PreparedStatement stmt = conn.prepareStatement(query)) {
 				stmt.execute();
+			} catch (SQLException e){
+				plugin.getLogger().log(Level.SEVERE, "An error occured in SQLStorage!",e);
+				throw e;
 			}
 		}
 	}
@@ -126,7 +130,11 @@ public class SQLStorage {
 		Optional<Method> optionalMethod = Arrays.stream(this.getClass().getDeclaredMethods())
 				.filter(m -> m.getName().equals(caller.getMethodName()))
 				.findAny();
-		if (optionalMethod.isEmpty()) throw new RuntimeException("Could not find method " + caller.getMethodName() + "! Please make sure you have the @SqlQuery annotation and only call this in a class that extends SQLStorage.");
+		if (optionalMethod.isEmpty()) {
+			RuntimeException ex = new RuntimeException("Could not find method " + caller.getMethodName() + "! Please make sure you have the @SqlQuery annotation and only call this in a class that extends SQLStorage.");
+			plugin.getLogger().log(Level.SEVERE, "An error occured in SQLStorage!",ex);
+			throw ex;
+		}
 		Method method = optionalMethod.get();
 		SqlQuery query = method.getAnnotation(SqlQuery.class);
 
@@ -137,7 +145,9 @@ public class SQLStorage {
 						 conn.prepareStatement(query.value(),query.generatedKeys())) {
 				return function.apply(stmt);
 			} catch (SQLException e) {
-				throw new RuntimeException("Could not PrepareStatement" , e);
+				RuntimeException ex = new RuntimeException("Could not PrepareStatement" , e);
+				plugin.getLogger().log(Level.SEVERE, "An error occured in SQLStorage!",ex);
+				throw ex;
 			}
 		});
 	}
@@ -149,7 +159,9 @@ public class SQLStorage {
 			connection.setAutoCommit(true);
 			return connection;
 		} catch (SQLException e) {
-			throw new RuntimeException("Database connection failed!",e);
+			RuntimeException ex = new RuntimeException("Database connection failed!",e);
+			plugin.getLogger().log(Level.SEVERE, "An error occured in SQLStorage!",ex);
+			throw ex;
 		}
 	}
 
