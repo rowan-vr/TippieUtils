@@ -8,7 +8,9 @@ import java.io.*;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -24,6 +26,8 @@ public class SQLStorage {
 	private final String DB_USER;
 	private final String DB_PASSWORD;
 
+	private final Driver DRIVER;
+
 	/**
 	 * Initialise the SQLStorage base for an embedded database.
 	 * @param plugin The plugin that is using this storage.
@@ -33,12 +37,13 @@ public class SQLStorage {
 	 */
 	public SQLStorage(Plugin plugin, Driver driver, SQLType type, File file){
 		this.plugin = plugin;
+		this.DRIVER = driver;
 		if (type != SQLType.H2)
 			throw new IllegalArgumentException("Only H2 is supported as embedded database");
 
 		try {
-			DriverManager.registerDriver(driver);
-			DB_CONNECTION = "jdbc:h2:file:" + file.getAbsolutePath() + ";MV_STORE=false";
+//			DriverManager.registerDriver(driver);
+			DB_CONNECTION = "jdbc:h2:file:" + file.getAbsolutePath() + "";
 			DB_USER = "SA";
 			DB_PASSWORD = "password";
 		} catch (Exception e) {
@@ -57,6 +62,7 @@ public class SQLStorage {
 	 */
 	public SQLStorage(Plugin plugin, Driver driver, SQLType type, String url, String username, String password){
 		this.plugin = plugin;
+		this.DRIVER = driver;
 		if (type != SQLType.MYSQL)
 			throw new IllegalArgumentException("Only MySQL is currently supported as server database");
 
@@ -152,10 +158,13 @@ public class SQLStorage {
 		});
 	}
 	@NotNull
-	private Connection getConnection() {
+	protected Connection getConnection() {
 		try {
-			Connection connection = DriverManager.getConnection(this.DB_CONNECTION, this.DB_USER,
-					this.DB_PASSWORD);
+			Properties properties = new Properties();
+			properties.setProperty("user", DB_USER);
+			properties.setProperty("password", DB_PASSWORD);
+
+			Connection connection = DRIVER.connect(this.DB_CONNECTION, properties);
 			connection.setAutoCommit(true);
 			return connection;
 		} catch (SQLException e) {
