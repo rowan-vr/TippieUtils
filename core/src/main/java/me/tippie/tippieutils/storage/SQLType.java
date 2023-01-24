@@ -1,16 +1,17 @@
 package me.tippie.tippieutils.storage;
 
 import me.tippie.tippieutils.storage.impl.H2Impl;
-import me.tippie.tippieutils.storage.impl.SQLTypeImplementation;
+import me.tippie.tippieutils.storage.impl.MySQLImpl;
 
 public enum SQLType {
-    H2(new H2Impl());
+    H2(H2Impl.class),
+    MySQL(MySQLImpl.class);
 
 
 
-    final SQLTypeImplementation implementation;
+    final Class<? extends SQLTypeImplementation> implClass;
 
-    SQLType(SQLTypeImplementation implementation) {
-        this.implementation = implementation;
+    SQLType(Class<? extends SQLTypeImplementation> implClass) {
+        this.implClass = implClass;
     }
 }

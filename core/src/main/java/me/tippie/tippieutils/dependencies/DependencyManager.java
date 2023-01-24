@@ -10,6 +10,7 @@ package me.tippie.tippieutils.dependencies;
 
 
 import com.google.common.collect.ImmutableSet;
+import lombok.Getter;
 import me.tippie.tippieutils.dependencies.classloader.IsolatedClassLoader;
 import me.tippie.tippieutils.dependencies.classloader.ReflectionClassPathAppender;
 import me.tippie.tippieutils.dependencies.relocations.Relocation;
@@ -35,6 +36,7 @@ public class DependencyManager {
     /**
      * The plugin instance
      */
+    @Getter
     private final Plugin plugin;
 
     private final ReflectionClassPathAppender classPathAppender;
@@ -195,7 +197,7 @@ public class DependencyManager {
             return normalFile;
         }
 
-        Path remappedFile = this.cacheDirectory.resolve("remapped");
+        Path remappedFile = this.cacheDirectory.resolve(dependency.getFileName("remapped"));
 
         // if the remapped source exists already, just use that.
         if (Files.exists(remappedFile)) {

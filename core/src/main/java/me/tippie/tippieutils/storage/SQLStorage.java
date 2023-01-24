@@ -3,7 +3,6 @@ package me.tippie.tippieutils.storage;
 import me.tippie.tippieutils.dependencies.DependencyManager;
 import me.tippie.tippieutils.storage.annotations.SqlQuery;
 import me.tippie.tippieutils.storage.impl.H2Impl;
-import me.tippie.tippieutils.storage.impl.SQLTypeImplementation;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,9 +10,7 @@ import java.io.*;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -26,9 +23,6 @@ import java.util.stream.Collectors;
  */
 public class SQLStorage {
     private final Plugin plugin;
-    private final String DB_CONNECTION;
-    private final String DB_USER;
-    private final String DB_PASSWORD;
     private final SQLTypeImplementation implementation;
 
     private final DependencyManager DEPENDENCY_MANAGER;
@@ -46,15 +40,17 @@ public class SQLStorage {
         this.DEPENDENCY_MANAGER = dependencyManager;
         File v2File = new File(file.getParentFile(), file.getName() + "-2");
 
-        this.implementation = type.implementation;
         try {
-//			DriverManager.registerDriver(driver);
-            DB_CONNECTION = "jdbc:h2:file:" + v2File.getAbsolutePath() + "";
-            DB_USER = "SA";
-            DB_PASSWORD = "password";
-            this.implementation.init(DB_CONNECTION,DB_USER,DB_PASSWORD,DEPENDENCY_MANAGER);
-            if (type.implementation instanceof H2Impl){
-                new H2Impl.MigrateH2ToVersion2(plugin,file,dependencyManager).run(DB_CONNECTION,DB_USER,DB_PASSWORD,type.implementation);
+            this.implementation = (SQLTypeImplementation) type.implClass.getDeclaredConstructors()[0].newInstance();
+            StorageCredentials cred = StorageCredentials.builder()
+                    .address(v2File.getAbsolutePath())
+                    .username("SA")
+                    .password("password")
+                    .build();
+
+            this.implementation.init(cred, DEPENDENCY_MANAGER);
+            if (this.implementation instanceof H2Impl impl){
+                impl.new MigrateH2ToVersion2(plugin,file,dependencyManager).run();
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -69,28 +65,28 @@ public class SQLStorage {
      * @param plugin            The plugin that is using this storage.
      * @param dependencyManager The dependency manager used to load the required dependencies.
      * @param type              The type of database to use.
-     * @param url               The location of the database such as 255.123.129.521:3306/database.
+     * @param url               The location of the database such as 255.123.129.521:3306.
+     * @param database          The name of the database.
      * @param username          The username of the database user
-     * @param password          The password of the databuase user
-     *
-     * @deprecated Since 3.0.0, currently unimplemented in favor of {@link #SQLStorage(Plugin, DependencyManager, SQLTypeImplementation, String, String, String)}
+     * @param password          The password of the database user
      */
-    @Deprecated
-    public SQLStorage(Plugin plugin, DependencyManager dependencyManager, SQLType type, String url, String username, String password) {
-        throw new UnsupportedOperationException("Not implemented yet");
-//        this.plugin = plugin;
-//        this.DEPENDENCY_MANAGER = dependencyManager;
-//        this.implementation = type.implementation;
-//
-//        try {
-//            DB_CONNECTION = "jdbc:mysql://" + url;
-//            DB_USER = username;
-//            DB_PASSWORD = password;
-//            this.implementation.init(DB_CONNECTION,DB_USER,DB_PASSWORD,DEPENDENCY_MANAGER);
-//        } catch (Exception e) {
-//            plugin.getLogger().log(Level.SEVERE, "An error occured in SQLStorage!", e);
-//            throw new RuntimeException(e);
-//        }
+    public SQLStorage(Plugin plugin, DependencyManager dependencyManager, SQLType type, String url, String database, String username, String password) {
+        this.plugin = plugin;
+        this.DEPENDENCY_MANAGER = dependencyManager;
+
+        try {
+            this.implementation = (SQLTypeImplementation) type.implClass.getDeclaredConstructors()[0].newInstance();
+            StorageCredentials cred = StorageCredentials.builder()
+                    .address(url)
+                    .database(database)
+                    .username(username)
+                    .password(password)
+                    .build();
+            this.implementation.init(cred,DEPENDENCY_MANAGER);
+        } catch (Exception e) {
+            plugin.getLogger().log(Level.SEVERE, "An error occured in SQLStorage!", e);
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -99,20 +95,16 @@ public class SQLStorage {
      * @param plugin            The plugin that is using this storage.
      * @param dependencyManager The dependency manager used to load the required dependencies.
      * @param impl              The custom implementation of the {@link SQLTypeImplementation} interface.
-     * @param jdbcUrl           The JDBC url.
-     * @param username          The username of the database user
-     * @param password          The password of the databuase user
+     *
+     * @implNote The custom implementation is given null as the {@link StorageCredentials} object.
      */
-    public SQLStorage(Plugin plugin, DependencyManager dependencyManager, SQLTypeImplementation impl, String jdbcUrl, String username, String password) {
+    public SQLStorage(Plugin plugin, DependencyManager dependencyManager, SQLTypeImplementation impl) {
         this.plugin = plugin;
         this.DEPENDENCY_MANAGER = dependencyManager;
         this.implementation = impl;
 
         try {
-            DB_CONNECTION = jdbcUrl;
-            DB_USER = username;
-            DB_PASSWORD = password;
-            this.implementation.init(DB_CONNECTION,DB_USER,DB_PASSWORD,DEPENDENCY_MANAGER);
+            this.implementation.init(null,DEPENDENCY_MANAGER);
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "An error occured in SQLStorage!", e);
             throw new RuntimeException(e);
@@ -205,7 +197,7 @@ public class SQLStorage {
     @NotNull
     protected Connection getConnection() {
         try {
-            return implementation.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD,DEPENDENCY_MANAGER);
+            return implementation.getConnection();
         } catch (SQLException e) {
             RuntimeException ex = new RuntimeException("Database connection failed!", e);
             plugin.getLogger().log(Level.SEVERE, "An error occured in SQLStorage!", ex);

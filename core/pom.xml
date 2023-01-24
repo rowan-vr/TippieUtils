@@ -10,7 +10,7 @@
     <parent>
         <groupId>me.tippie</groupId>
         <artifactId>tippieutils-parent</artifactId>
-        <version>3.0.0</version>
+        <version>3.1.0</version>
     </parent>
 
     <properties>
@@ -89,6 +89,15 @@
                     <sourcepath>./target/generated-sources/delombok</sourcepath>
                     <doctitle>TippieUtils JavaDoc v${project.parent.version}</doctitle>
                     <windowtitle>TippieUtils JavaDoc v${project.parent.version}</windowtitle>
+<!--                    <excludePackageNames>*.impl:*.impl.*</excludePackageNames>-->
+                    <tags>
+                        <tag>
+                            <name>implNote</name>
+                            <!-- todo tag for all places -->
+                            <placement>a</placement>
+                            <head>Implementation Note:</head>
+                        </tag>
+                    </tags>
                 </configuration>
             </plugin>
         </plugins>
@@ -138,7 +147,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
+            <version>1.18.24</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -157,6 +166,12 @@
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>8.0.31</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>4.0.3</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

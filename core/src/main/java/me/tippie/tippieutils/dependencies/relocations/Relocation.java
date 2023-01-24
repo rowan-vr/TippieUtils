@@ -5,12 +5,26 @@
 */
 package me.tippie.tippieutils.dependencies.relocations;
 
+import org.bukkit.plugin.Plugin;
+
+import java.net.URLClassLoader;
 import java.util.Objects;
 
 public final class Relocation {
-    private static final String RELOCATION_PREFIX = "me.lucko.luckperms.lib.";
+    private static String RELOCATION_PREFIX = null;
+    static boolean MAVEN_OUTPUT = false;
+
+    public static void init(String prefix){
+        RELOCATION_PREFIX = prefix;
+    }
+
+    public static void setMavenOutput(boolean mavenOutput){
+        MAVEN_OUTPUT = mavenOutput;
+    }
 
     public static Relocation of(String id, String pattern) {
+        if (RELOCATION_PREFIX == null) throw new IllegalStateException("Relocation prefix not initialized, initialize with Relocation.init(plugin)");
+
         return new Relocation(pattern.replace("{}", "."), RELOCATION_PREFIX + id);
     }
 

@@ -1,25 +1,26 @@
 package me.tippie.tippieutils.storage.impl;
 
 import com.google.common.collect.ImmutableSet;
+import lombok.NoArgsConstructor;
 import me.tippie.tippieutils.dependencies.Dependency;
 import me.tippie.tippieutils.dependencies.DependencyManager;
 import me.tippie.tippieutils.dependencies.classloader.IsolatedClassLoader;
-import me.tippie.tippieutils.storage.SQLStorage;
+import me.tippie.tippieutils.storage.SQLTypeImplementation;
+import me.tippie.tippieutils.storage.StorageCredentials;
 import org.bukkit.plugin.Plugin;
-import org.h2.jdbc.JdbcConnection;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 
+@NoArgsConstructor
 public class H2Impl implements SQLTypeImplementation {
     private Constructor<?> connectionConstructor;
     private static boolean initialized = false;
@@ -37,9 +38,16 @@ public class H2Impl implements SQLTypeImplementation {
         DEPENDENCIES.add(dependency);
     }
 
+    private String url;
+    private String username;
+    private String password;
 
     @Override
-    public void init(String url, String username, String password, DependencyManager dependencyManager) {
+    public void init(StorageCredentials cred , DependencyManager dependencyManager) {
+        username = cred.getUsername();
+        password = cred.getPassword();
+        url = "jdbc:h2:file:" + cred.getAddress() + "";
+
         dependencyManager.loadDependencies(DEPENDENCIES);
         IsolatedClassLoader classLoader = dependencyManager.obtainClassLoaderWith(DEPENDENCIES);
         try {
@@ -52,7 +60,7 @@ public class H2Impl implements SQLTypeImplementation {
     }
 
     @Override
-    public Connection getConnection(String url, String username, String password, DependencyManager dependencyManager) {
+    public Connection getConnection() {
         try {
             return (Connection) this.connectionConstructor.newInstance(url, new Properties(), username, password, false);
         } catch (ReflectiveOperationException e) {
@@ -72,7 +80,7 @@ public class H2Impl implements SQLTypeImplementation {
      * <p>
      * See <a href="http://www.h2database.com/html/migration-to-v2.html">here</a> for more info.
      */
-    public static final class MigrateH2ToVersion2 {
+    public final class MigrateH2ToVersion2 {
         private static final Set<Dependency> LEGACY_DEPENDENCIES = ImmutableSet.of(Dependency.of("com.h2database",
                 "h2",
                 "1.4.199",
@@ -88,7 +96,7 @@ public class H2Impl implements SQLTypeImplementation {
             this.dependencyManager = dependencyManager;
         }
 
-        public void run(String url, String username, String password, SQLTypeImplementation impl) throws Exception {
+        public void run() throws Exception {
             Path oldDatabase = new File(file.getParentFile(), file.getName() + ".h2.db").toPath();
 
             if (!Files.exists(oldDatabase)) {
@@ -108,7 +116,7 @@ public class H2Impl implements SQLTypeImplementation {
             }
 
             this.plugin.getLogger().info("[DB Upgrade] Stage 2: Importing the intermediary file into the new database...");
-            try (Connection c = impl.getConnection(url, username, password, dependencyManager)) {
+            try (Connection c = H2Impl.this.getConnection()) {
                 try (Statement stmt = c.createStatement()) {
                     stmt.execute(String.format("RUNSCRIPT FROM '%s'", tempMigrationFile));
                 }

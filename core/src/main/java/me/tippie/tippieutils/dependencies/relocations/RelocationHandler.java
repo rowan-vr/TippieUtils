@@ -1,3 +1,8 @@
+/* Adapted from https://github.com/LuckPerms/LuckPerms/blob/04bb035a83af96d55e7dffea514c505c66ce0f54/common/src/main/java/me/lucko/luckperms/common/dependencies/classloader/IsolatedClassLoader.java
+    Copyright (c) lucko (Luck) <luck@lucko.me>
+    Copyright (c) contributors
+    licensed under the MIT License.
+*/
 package me.tippie.tippieutils.dependencies.relocations;
 
 import me.tippie.tippieutils.dependencies.Dependency;
@@ -68,6 +73,13 @@ public class RelocationHandler {
         Map<String, String> mappings = new HashMap<>();
         for (Relocation relocation : relocations) {
             mappings.put(relocation.getPattern(), relocation.getRelocatedPattern());
+
+            if (Relocation.MAVEN_OUTPUT){
+                System.out.println("                                <relocation>\n" +
+                        "                                    <pattern>"+relocation.getPattern()+"</pattern>\n" +
+                        "                                    <shadedPattern>"+relocation.getRelocatedPattern()+"</shadedPattern>\n" +
+                        "                                </relocation>");
+            }
         }
 
         // create and invoke a new relocator
