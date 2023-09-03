@@ -103,7 +103,7 @@ public class SQLStorage implements Listener {
      * @param dependencyManager The dependency manager used to load the required dependencies.
      * @param impl              The custom implementation of the {@link SQLTypeImplementation} interface.
      *
-     * @implNote The custom implementation is given null as the {@link StorageCredentials} object.
+     * The custom implementation is given null as the {@link StorageCredentials} object.
      */
     public SQLStorage(Plugin plugin, DependencyManager dependencyManager, SQLTypeImplementation impl) {
         this.plugin = plugin;
