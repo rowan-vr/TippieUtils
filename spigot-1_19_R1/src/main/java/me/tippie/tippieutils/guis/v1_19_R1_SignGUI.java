@@ -20,9 +20,14 @@ import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 public class v1_19_R1_SignGUI implements SignGUI.Internals {
+    private final Map<UUID, SignBlockEntity> signs = new HashMap<>();
+
     @Override
     public void open(SignGUI gui, Plugin plugin) {
         Player player = gui.getPlayer();
@@ -35,6 +40,7 @@ public class v1_19_R1_SignGUI implements SignGUI.Internals {
         player.sendBlockChange(new Location(player.getWorld(), pos.getX(), pos.getY(), pos.getZ()), blockData);
 
         SignBlockEntity signBlock = BlockEntityType.SIGN.create(pos, state);
+        signs.put(player.getUniqueId(),signBlock);
 
         for (int i = 0; i < Math.min(gui.getText().size(), 4); i++)
             signBlock.setMessage(i,Component.literal(gui.getText().get(i)));
@@ -57,6 +63,10 @@ public class v1_19_R1_SignGUI implements SignGUI.Internals {
             @Override
             public void channelRead(ChannelHandlerContext ctx, Object msg) {
                 if (msg instanceof ServerboundSignUpdatePacket packet) {
+                    ((CraftPlayer) player).getHandle().connection.player.resetLastActionTime();
+                    SignBlockEntity sign = signs.get(player.getUniqueId());
+                    if (sign!=null) ((CraftPlayer) player).getHandle().connection.send(sign.getUpdatePacket());
+
                     if (consumer.apply(packet.getLines()))
                         ((CraftPlayer) player).getHandle().connection.connection.channel.pipeline().remove(this);
                 }
