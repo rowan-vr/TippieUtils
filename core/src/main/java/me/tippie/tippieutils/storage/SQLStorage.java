@@ -3,6 +3,10 @@ package me.tippie.tippieutils.storage;
 import me.tippie.tippieutils.dependencies.DependencyManager;
 import me.tippie.tippieutils.storage.annotations.SqlQuery;
 import me.tippie.tippieutils.storage.impl.H2Impl;
+import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,6 +14,7 @@ import java.io.*;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.Arrays;
+import java.util.EventListener;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -21,7 +26,7 @@ import java.util.stream.Collectors;
  *
  * @since 1.2.0
  */
-public class SQLStorage {
+public class SQLStorage implements Listener {
     private final Plugin plugin;
     private final SQLTypeImplementation implementation;
 
@@ -37,6 +42,7 @@ public class SQLStorage {
      */
     public SQLStorage(Plugin plugin, DependencyManager dependencyManager, SQLType type, File file) {
         this.plugin = plugin;
+        Bukkit.getPluginManager().registerEvents(this,this.plugin);
         this.DEPENDENCY_MANAGER = dependencyManager;
         File v2File = new File(file.getParentFile(), file.getName() + "-2");
 
@@ -72,6 +78,7 @@ public class SQLStorage {
      */
     public SQLStorage(Plugin plugin, DependencyManager dependencyManager, SQLType type, String url, String database, String username, String password) {
         this.plugin = plugin;
+        Bukkit.getPluginManager().registerEvents(this,this.plugin);
         this.DEPENDENCY_MANAGER = dependencyManager;
 
         try {
@@ -100,6 +107,7 @@ public class SQLStorage {
      */
     public SQLStorage(Plugin plugin, DependencyManager dependencyManager, SQLTypeImplementation impl) {
         this.plugin = plugin;
+        Bukkit.getPluginManager().registerEvents(this,this.plugin);
         this.DEPENDENCY_MANAGER = dependencyManager;
         this.implementation = impl;
 
@@ -108,6 +116,13 @@ public class SQLStorage {
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "An error occured in SQLStorage!", e);
             throw new RuntimeException(e);
+        }
+    }
+
+    @EventHandler
+    private void shutdown(PluginDisableEvent event){
+        if (event.getPlugin().getName().equalsIgnoreCase(this.plugin.getName())) {
+            this.implementation.close();
         }
     }
 

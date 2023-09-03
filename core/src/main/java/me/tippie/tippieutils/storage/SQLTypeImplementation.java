@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public interface SQLTypeImplementation {
     void init(StorageCredentials cred, DependencyManager dependencyManager);
 
-//    Connection getConnection(String url, String username, String password, DependencyManager dependencyManager) throws SQLException;
+    void close();
 
     Connection getConnection() throws SQLException;
 }

@@ -64,7 +64,11 @@ public abstract class AbstractHikariImpl implements SQLTypeImplementation {
         config.setInitializationFailTimeout(-1);
 
         this.hikari = new HikariDataSource(config);
+    }
 
+    @Override
+    public void close() {
+        this.hikari.close();
     }
 
     @Override
