@@ -14,6 +14,7 @@ import java.lang.reflect.Constructor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Properties;
@@ -60,10 +61,23 @@ public class H2Impl implements SQLTypeImplementation {
     }
 
     @Override
+    public void close() {
+        try {
+            if (cache != null) cache.close();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private Connection cache;
+
+    @Override
     public Connection getConnection() {
         try {
-            return (Connection) this.connectionConstructor.newInstance(url, new Properties(), username, password, false);
-        } catch (ReflectiveOperationException e) {
+            if (cache != null && !cache.isClosed()) return cache;
+            cache = (Connection) this.connectionConstructor.newInstance(url, new Properties(), username, password, false);
+            return cache;
+        } catch (ReflectiveOperationException | SQLException e) {
             throw new RuntimeException(e);
         }
     }
