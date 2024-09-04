@@ -10,7 +10,7 @@
     <parent>
         <artifactId>tippieutils-parent</artifactId>
         <groupId>me.tippie</groupId>
-        <version>3.1.1</version>
+        <version>3.1.2</version>
     </parent>
 
     <build>
@@ -68,6 +68,11 @@
         <dependency>
             <groupId>me.tippie</groupId>
             <artifactId>tippieutils-spigot_1_19_R1</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>me.tippie</groupId>
+            <artifactId>tippieutils-spigot_1_21_R1</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>

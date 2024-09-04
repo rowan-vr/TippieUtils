@@ -6,7 +6,7 @@
 
     <groupId>me.tippie</groupId>
     <artifactId>tippieutils-parent</artifactId>
-    <version>3.1.1</version>
+    <version>3.1.2</version>
     <packaging>pom</packaging>
 
     <distributionManagement>
@@ -23,9 +23,7 @@
     <url>https://tippie.me</url>
     <modules>
         <module>core</module>
-<!--        <module>spigot_1_17_R1</module>-->
-<!--        <module>spigot_1_18_R1</module>-->
-<!--        <module>spigot_1_18_R2</module>-->
+        <module>spigot-1_21_R1</module>
         <module>spigot-1_19_R1</module>
         <module>dist</module>
     </modules>

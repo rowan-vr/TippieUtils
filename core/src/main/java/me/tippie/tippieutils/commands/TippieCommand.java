@@ -25,39 +25,33 @@ import java.util.stream.Collectors;
 public class TippieCommand implements TabExecutor {
 	/**
 	 * The registered subcommands of this command.
-	 * @return The list of subcommands registered.
 	 */
 	@Getter private final List<TippieCommand> subCommands = new ArrayList<>();
 	
 	/**
 	 * The name of this command.
-	 * @return The name of this command.
 	 */
 	protected String name = null;
 	
 	/**
 	 * The description of this command used in generated help messages.
-	 * @return The description of this command.
-	 * @see TippieCommand#sendHelpMessage(CommandSender, String, String) 
+	 * @see TippieCommand#sendHelpMessage(CommandSender, String, String)
 	 */
 	protected String description = null;
 
 	/**
 	 * The permission needed to execute this command
-	 * @return The permission needed to execute this command
 	 */
 	protected String permission = null;
 
 	/**
 	 * The sublevel of this command. This indicates how deep the command is within subcommands. For example, if this command is the root command, then this value is 0. If this command is a subcommand of another command, then this value is 1.
-	 * @return The sublevel of this command.
 	 */
 	protected int subLevel = 0;
 	
 	/**
 	 * The prefix used in the help message.
-	 * @return The prefix used in the help message.
-	 * @see TippieCommand#sendHelpMessage(CommandSender, String, String) 
+	 * @see TippieCommand#sendHelpMessage(CommandSender, String, String)
 	 */
 	protected String prefix = "";
 

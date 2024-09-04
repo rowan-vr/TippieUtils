@@ -10,7 +10,7 @@
     <parent>
         <groupId>me.tippie</groupId>
         <artifactId>tippieutils-parent</artifactId>
-        <version>3.1.1</version>
+        <version>3.1.2</version>
     </parent>
 
     <properties>
@@ -19,7 +19,6 @@
     </properties>
 
     <build>
-        <sourceDirectory>./target/generated-sources/delombok</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -39,23 +38,6 @@
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok-maven-plugin</artifactId>
-                <version>1.18.20.0</version>
-                <configuration>
-                    <sourceDirectory>src</sourceDirectory>
-                    <outputDirectory>./target/generated-sources/delombok</outputDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>delombok</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -86,7 +68,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <sourcepath>./target/generated-sources/delombok</sourcepath>
                     <doctitle>TippieUtils JavaDoc v${project.parent.version}</doctitle>
                     <windowtitle>TippieUtils JavaDoc v${project.parent.version}</windowtitle>
 <!--                    <excludePackageNames>*.impl:*.impl.*</excludePackageNames>-->
@@ -147,7 +128,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
+            <version>1.18.34</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
