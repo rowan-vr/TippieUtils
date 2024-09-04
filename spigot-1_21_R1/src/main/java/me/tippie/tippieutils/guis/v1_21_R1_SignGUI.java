@@ -68,7 +68,7 @@ public class v1_21_R1_SignGUI implements me.tippie.tippieutils.guis.SignGUI.Inte
 
         connection.channel.pipeline().addBefore("packet_handler", "tippieutils_signgui", new ChannelDuplexHandler() {
             @Override
-            public void channelRead(ChannelHandlerContext ctx, Object msg) {
+            public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
                 if (msg instanceof ServerboundSignUpdatePacket packet) {
                     ((CraftPlayer) player).getHandle().connection.player.resetLastActionTime();
                     SignBlockEntity sign = signs.get(player.getUniqueId());
@@ -77,6 +77,7 @@ public class v1_21_R1_SignGUI implements me.tippie.tippieutils.guis.SignGUI.Inte
                     if (consumer.apply(packet.getLines()))
                         connection.channel.pipeline().remove(this);
                 }
+                super.channelRead(ctx, msg);
             }
         });
     }
