@@ -13,12 +13,13 @@ import java.util.HashMap;
 
 public class GuiManager implements Listener {
     final HashMap<Player, OpenGUI> openGuis = new HashMap<>();
-
+    final Plugin plugin;
     /**
      * Creates a new GuiManager for the given plugin.
      * @param plugin The plugin to create the GuiManager for.
      */
     public GuiManager(Plugin plugin) {
+        this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 

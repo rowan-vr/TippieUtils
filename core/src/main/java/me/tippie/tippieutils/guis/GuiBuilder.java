@@ -9,15 +9,19 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class GuiBuilder {
     private final Inventory inventory;
     private final HashMap<Integer, BiConsumer<InventoryClickEvent,OpenGUI>> slots = new HashMap<>();
     private BiConsumer<InventoryClickEvent, OpenGUI> generalClickConsumer = null;
     private BiConsumer<InventoryCloseEvent,OpenGUI> closeConsumer = null;
+    private Integer refreshRate = null;
+    private Consumer<OpenGUI> refreshFunction = null;
     @Getter private boolean alwaysRunGeneralConsumer = false;
     @Getter private String name = "null";
 
@@ -93,6 +97,18 @@ public class GuiBuilder {
         return this;
     }
 
+    public GuiBuilder setRefresh(int refreshRate, @NotNull Consumer<OpenGUI> refreshFunction) {
+        this.refreshFunction = refreshFunction;
+        this.refreshRate = refreshRate;
+        return this;
+    }
+
+    public GuiBuilder clearRefresh() {
+        this.refreshFunction = null;
+        this.refreshRate = null;
+        return this;
+    }
+
     /**
      * Opens the GUI for the given player.
      * @param player The player to open the GUI for.
@@ -114,6 +130,9 @@ public class GuiBuilder {
         openGUI.setOnClose(closeConsumer);
         openGUI.setGeneralClickConsumer(generalClickConsumer);
         openGUI.setAlwaysRunGeneralConsumer(alwaysRunGeneralConsumer);
+        openGUI.setRefreshFunction(refreshFunction);
+        openGUI.setRefreshRate(refreshRate);
+        openGUI.startRefreshTask();
         return openGUI;
     }
 }

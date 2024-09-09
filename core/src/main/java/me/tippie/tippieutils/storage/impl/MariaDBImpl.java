@@ -6,21 +6,21 @@ import me.tippie.tippieutils.dependencies.DependencyManager;
 import me.tippie.tippieutils.dependencies.relocations.Relocation;
 import me.tippie.tippieutils.storage.StorageCredentials;
 
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Set;
-import java.sql.Driver;
 
-public class MySQLImpl extends AbstractHikariImpl {
-    private final Set<Dependency> DEPENDENCIES = Set.of(Dependency.of("mysql",
-            "mysql-connector-java",
-            "8.0.23",
-            "/31bQCr9OcEnh0cVBaM6MEEDsjjsG3pE6JNtMynadTU=",
+public class MariaDBImpl extends AbstractHikariImpl {
+    private final Set<Dependency> DEPENDENCIES = Set.of(Dependency.of("org{}mariadb{}jdbc",
+            "mariadb-java-client",
+            "3.4.1",
+            "9g5LKC8fS9t08KJkNrpweKXkgLb2cC9qe0XZul5gSiQ=",
             Dependency.Properties.builder().autoload(true).build(),
-            Relocation.of("mysql", "com{}mysql")));
+            Relocation.of("mariadb", "org{}mariadb{}jdbc")));
 
-    public MySQLImpl() {
+    public MariaDBImpl() {
         super("3306");
     }
 
@@ -29,7 +29,7 @@ public class MySQLImpl extends AbstractHikariImpl {
         dependencyManager.loadDependencies(DEPENDENCIES);
         cred = cred.toBuilder()
                 .propertyIfAbsent("cachePrepStmts", "true")
-                .propertyIfAbsent("prepStmtCacheSize", "250")
+                .propertyIfAbsent("prepStmtCacheSize", "25000")
                 .propertyIfAbsent("prepStmtCacheSqlLimit", "204800")
                 .propertyIfAbsent("useServerPrepStmts", "true")
                 .propertyIfAbsent("useLocalSessionState", "true")
@@ -46,7 +46,7 @@ public class MySQLImpl extends AbstractHikariImpl {
         Enumeration<Driver> drivers = DriverManager.getDrivers();
         while (drivers.hasMoreElements()) {
             Driver driver = drivers.nextElement();
-            if (driver.getClass().getName().equals("com.mysql.cj.jdbc.Driver")) {
+            if (driver.getClass().getName().equals("org.mariadb.jdbc.Driver")) {
                 try {
                     DriverManager.deregisterDriver(driver);
                 } catch (SQLException e) {
@@ -58,8 +58,8 @@ public class MySQLImpl extends AbstractHikariImpl {
 
     @Override
     protected void configureDatabase(HikariConfig config, String address, String port, String databaseName, String username, String password) {
-        config.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        config.setJdbcUrl("jdbc:mysql://" + address + ":" + port + "/" + databaseName);
+        config.setDriverClassName("org.mariadb.jdbc.Driver");
+        config.setJdbcUrl("jdbc:mariadb://" + address + ":" + port + "/" + databaseName);
         config.setUsername(username);
         config.setPassword(password);
     }

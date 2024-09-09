@@ -27,8 +27,8 @@ public abstract class AbstractHikariImpl implements SQLTypeImplementation {
     private final Set<Dependency> DEPENDENCIES = Set.of(Dependency.of(
             "com{}zaxxer",
             "HikariCP",
-            "4.0.3",
-            "fAJK7/HBBjV210RTUT+d5kR9jmJNF/jifzCi6XaIxsk=",
+            "5.1.0",
+            "pHpu5iN5aU7lLDADbwkxty+a7iqAHVkDQe2CvYOeITQ=",
             Dependency.Properties.builder().autoload(true).build(),
             Relocation.of("hikari", "com{}zaxxer{}hikari")));
 
