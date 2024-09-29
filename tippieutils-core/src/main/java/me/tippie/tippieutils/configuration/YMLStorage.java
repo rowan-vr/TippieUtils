@@ -1,5 +1,6 @@
 package me.tippie.tippieutils.configuration;
 
+import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -16,6 +17,7 @@ import java.util.logging.Level;
 /**
  * A class for handling YML configuration files
  */
+@Getter
 public class YMLStorage {
     private final JavaPlugin plugin;
     private FileConfiguration config;
