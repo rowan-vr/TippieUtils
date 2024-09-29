@@ -6,3 +6,4 @@ rootProject.name = "tippieutils"
 
 include("tippieutils-core")
 include("tippieutils-1_21_R1")
+include("tippieutils-dist")

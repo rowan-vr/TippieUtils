@@ -1,4 +1,3 @@
-
 plugins {
     `java-library`
     `maven-publish`
@@ -35,4 +34,27 @@ tasks {
 java {
     withSourcesJar()
     withJavadocJar()
+}
+
+publishing {
+    publications.create<MavenPublication>("mavenJava") {
+        groupId = project.group.toString()
+        artifactId = "tippieutils"
+        version = project.version.toString()
+        from(components["java"])
+    }
+
+    repositories {
+        maven {
+            credentials {
+                username = findProperty("tippieRepoUsername") as String?
+                password = findProperty("tippieRepoPassword") as String?
+            }
+            url = if(project.version.toString().endsWith("-SNAPSHOT")) {
+                uri("https://repo.tippie.me/repository/maven-public-snapshots/")
+            } else {
+                uri("https://repo.tippie.me/repository/maven-public-releases/")
+            }
+        }
+    }
 }
