@@ -52,9 +52,9 @@ public class YMLStorage {
                 boolean suc = configPath.mkdirs();
                 if(!suc) throw new IOException("[YMLStorage] Failed to create directory "+configPath);
             }
-            this.configFile = new File(configPath, configName+".yml");
+            this.configFile = new File(configPath, configName);
             if(!configFile.exists()) {
-                boolean suc = configFile.createNewFile();
+                boolean suc = configFile.getParentFile().mkdirs() && configFile.createNewFile();
                 if(suc) plugin.saveResource(configName, false);
             }
             this.config = new YamlConfiguration();
