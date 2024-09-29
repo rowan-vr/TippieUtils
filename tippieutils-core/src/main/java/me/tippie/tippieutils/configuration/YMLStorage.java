@@ -27,7 +27,7 @@ public class YMLStorage {
      * This constructor creates a new YMLStorage object
      * Note that this method uses the hooked plugin instance as Data Folder
      * @param plugin The JavaPlugin instance
-     * @param configName The name of the configuration file
+     * @param configName The name of the configuration file without .yml
      * @param path The optional path to the configuration file
      */
     public YMLStorage(JavaPlugin plugin, @NotNull String configName, @Nullable String... path) {
@@ -52,9 +52,9 @@ public class YMLStorage {
                 boolean suc = configPath.mkdirs();
                 if(!suc) throw new IOException("[YMLStorage] Failed to create directory "+configPath);
             }
-            this.configFile = new File(configPath, configName);
+            this.configFile = new File(configPath, configName+".yml");
             if(!configFile.exists()) {
-                boolean suc = configFile.getParentFile().mkdirs();
+                boolean suc = configFile.createNewFile();
                 if(suc) plugin.saveResource(configName, false);
             }
             this.config = new YamlConfiguration();
