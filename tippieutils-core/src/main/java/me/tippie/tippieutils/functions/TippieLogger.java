@@ -91,7 +91,7 @@ public class TippieLogger extends Logger {
         else logger.log(lvl, msg.toString());
     }
 
-    private static String getStackTrace(Throwable t) {
+  private static String getStackTrace(Throwable t) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw, true);
         t.printStackTrace(pw);
