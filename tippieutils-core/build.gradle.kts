@@ -25,6 +25,14 @@ tasks {
         dependsOn("shadowJar")
     }
 
+    jar {
+        archiveClassifier = "slim"
+    }
+
+    shadowJar {
+        archiveClassifier = ""
+    }
+
     compileJava {
         options.encoding = Charsets.UTF_8.name()
         options.release.set(21)
