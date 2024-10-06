@@ -29,7 +29,7 @@ public class YMLStorage {
      * This constructor creates a new YMLStorage object
      * Note that this method uses the hooked plugin instance as Data Folder
      * @param plugin The JavaPlugin instance
-     * @param configName The name of the configuration file without .yml
+     * @param configName The name of the configuration file <b>with</b> .yml at the end
      * @param path The optional path to the configuration file
      */
     public YMLStorage(JavaPlugin plugin, @NotNull String configName, @Nullable String... path) {
