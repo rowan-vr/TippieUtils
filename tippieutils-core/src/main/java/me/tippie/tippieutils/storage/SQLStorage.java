@@ -4,6 +4,7 @@ import me.tippie.tippieutils.dependencies.DependencyManager;
 import me.tippie.tippieutils.storage.annotations.SqlQuery;
 import me.tippie.tippieutils.storage.impl.H2Impl;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
@@ -59,6 +60,31 @@ public class SQLStorage implements Listener {
                 impl.new MigrateH2ToVersion2(plugin,file,dependencyManager).run();
             }
         } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    /**
+     * Initialise the SQLStorage base for an embedded database.
+     *
+     * @param plugin            The plugin that is using this storage.
+     * @param dependencyManager The dependency manager used to load the required dependencies.
+     * @param type              The type of database to use.
+     * @param credentials       The {@link StorageCredentials} for this connection.
+     *                          This can be easily created using {@link SQLType#parseConfiguration(ConfigurationSection)}
+     *
+     **/
+    public SQLStorage(Plugin plugin, DependencyManager dependencyManager, SQLType type, StorageCredentials credentials) {
+        this.plugin = plugin;
+        Bukkit.getPluginManager().registerEvents(this,this.plugin);
+        this.DEPENDENCY_MANAGER = dependencyManager;
+
+        try {
+            this.implementation = (SQLTypeImplementation) type.implClass.getDeclaredConstructors()[0].newInstance();
+            this.implementation.init(credentials,DEPENDENCY_MANAGER);
+        } catch (Exception e) {
+            plugin.getLogger().log(Level.SEVERE, "An error occured in SQLStorage!", e);
             throw new RuntimeException(e);
         }
     }

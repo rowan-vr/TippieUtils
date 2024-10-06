@@ -1,5 +1,6 @@
 package me.tippie.tippieutils.configuration;
 
+import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -16,6 +17,7 @@ import java.util.logging.Level;
 /**
  * A class for handling YML configuration files
  */
+@Getter
 public class YMLStorage {
     private final JavaPlugin plugin;
     private FileConfiguration config;
@@ -27,7 +29,7 @@ public class YMLStorage {
      * This constructor creates a new YMLStorage object
      * Note that this method uses the hooked plugin instance as Data Folder
      * @param plugin The JavaPlugin instance
-     * @param configName The name of the configuration file
+     * @param configName The name of the configuration file without .yml
      * @param path The optional path to the configuration file
      */
     public YMLStorage(JavaPlugin plugin, @NotNull String configName, @Nullable String... path) {
@@ -54,7 +56,7 @@ public class YMLStorage {
             }
             this.configFile = new File(configPath, configName);
             if(!configFile.exists()) {
-                boolean suc = configFile.getParentFile().mkdirs();
+                boolean suc = configFile.getParentFile().mkdirs() && configFile.createNewFile();
                 if(suc) plugin.saveResource(configName, false);
             }
             this.config = new YamlConfiguration();
