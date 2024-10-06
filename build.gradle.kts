@@ -3,6 +3,6 @@ plugins {
 }
 
 allprojects {
-    version="4.0.2-SNAPSHOT"
+    version="4.0.3-SNAPSHOT"
     group="me.tippie"
 }
