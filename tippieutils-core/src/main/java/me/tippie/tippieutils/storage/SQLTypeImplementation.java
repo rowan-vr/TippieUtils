@@ -13,4 +13,12 @@ public interface SQLTypeImplementation {
     void close();
 
     Connection getConnection() throws SQLException;
+
+    default boolean hasRestart() {
+        return false;
+    }
+
+    default void restart(StorageCredentials cred) {
+        throw new UnsupportedOperationException("This SQLType does not support restarts");
+    }
 }

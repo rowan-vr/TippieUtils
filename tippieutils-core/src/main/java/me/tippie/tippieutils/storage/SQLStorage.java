@@ -32,6 +32,7 @@ public class SQLStorage implements Listener {
     private final SQLTypeImplementation implementation;
 
     private final DependencyManager DEPENDENCY_MANAGER;
+    private final StorageCredentials DATABASE_CRED;
 
     /**
      * Initialise the SQLStorage base for an embedded database.
@@ -49,13 +50,13 @@ public class SQLStorage implements Listener {
 
         try {
             this.implementation = (SQLTypeImplementation) type.implClass.getDeclaredConstructors()[0].newInstance();
-            StorageCredentials cred = StorageCredentials.builder()
+            DATABASE_CRED = StorageCredentials.builder()
                     .address(v2File.getAbsolutePath())
                     .username("SA")
                     .password("password")
                     .build();
 
-            this.implementation.init(cred, DEPENDENCY_MANAGER);
+            this.implementation.init(DATABASE_CRED, DEPENDENCY_MANAGER);
             if (this.implementation instanceof H2Impl impl){
                 impl.new MigrateH2ToVersion2(plugin,file,dependencyManager).run();
             }
@@ -81,8 +82,9 @@ public class SQLStorage implements Listener {
         this.DEPENDENCY_MANAGER = dependencyManager;
 
         try {
+            DATABASE_CRED = credentials;
             this.implementation = (SQLTypeImplementation) type.implClass.getDeclaredConstructors()[0].newInstance();
-            this.implementation.init(credentials,DEPENDENCY_MANAGER);
+            this.implementation.init(DATABASE_CRED,DEPENDENCY_MANAGER);
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "An error occured in SQLStorage!", e);
             throw new RuntimeException(e);
@@ -109,13 +111,13 @@ public class SQLStorage implements Listener {
 
         try {
             this.implementation = (SQLTypeImplementation) type.implClass.getDeclaredConstructors()[0].newInstance();
-            StorageCredentials cred = StorageCredentials.builder()
+            DATABASE_CRED = StorageCredentials.builder()
                     .address(url)
                     .database(database)
                     .username(username)
                     .password(password)
                     .build();
-            this.implementation.init(cred,DEPENDENCY_MANAGER);
+            this.implementation.init(DATABASE_CRED,DEPENDENCY_MANAGER);
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "An error occured in SQLStorage!", e);
             throw new RuntimeException(e);
@@ -138,6 +140,7 @@ public class SQLStorage implements Listener {
         this.implementation = impl;
 
         try {
+            DATABASE_CRED = null;
             this.implementation.init(null,DEPENDENCY_MANAGER);
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "An error occured in SQLStorage!", e);
@@ -152,6 +155,23 @@ public class SQLStorage implements Listener {
         }
     }
 
+
+    protected void restart() {
+        if (this.implementation.hasRestart()) {
+            this.implementation.restart(DATABASE_CRED);
+        } else {
+            this.implementation.close();
+            this.implementation.init(DATABASE_CRED, DEPENDENCY_MANAGER);
+        }
+
+        this.implementation.close();
+        this.implementation.init(DATABASE_CRED, DEPENDENCY_MANAGER);
+    }
+
+
+    protected void onPrepareStatementException(SQLException  exception) {
+        // Override this method to handle SQL exceptions
+    }
 
     /**
      * Run a sql script from the resources of this plugin.
@@ -203,6 +223,9 @@ public class SQLStorage implements Listener {
      *     }
      * </pre>
      *
+     * <i>Note:</i> This method can return a {@link RuntimeException} if the {@link PreparedStatement} fails to execute.
+     * All the {@link SQLException} can be caught and handled by overriding the {@link #onPrepareStatementException(SQLException)} method.
+     *
      * @param function A function from a {@link PreparedStatement} to a {@link T}.
      * @param <T>      The return value of the consumer
      * @return A {@link CompletableFuture} that will be completed when function is finished
@@ -230,6 +253,7 @@ public class SQLStorage implements Listener {
             } catch (SQLException e) {
                 RuntimeException ex = new RuntimeException("Could not PrepareStatement", e);
                 plugin.getLogger().log(Level.SEVERE, "An error occured in SQLStorage!", ex);
+                onPrepareStatementException(e);
                 throw ex;
             }
         });
